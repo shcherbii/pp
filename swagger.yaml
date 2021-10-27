@@ -1,0 +1,625 @@
+openapi: 3.0.1
+info:
+  title: Car Service API
+  description: In this car service you can rent a car.
+  version: 1.0.0
+  
+servers:
+  - description: Main Car Service server
+    url: http://CarService.Yura.com/v1
+tags:
+- name: user
+  description: All about user
+- name: Car
+  description: All information about the car
+- name: Service
+  description: Access to reservation of car
+
+paths:
+  /Car:
+    post:
+      tags:
+      - Car
+      summary: Place a car
+      operationId: addCar
+      requestBody:
+        description: placing a certain car
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/Car'
+          application/xml:
+            schema:
+             $ref: '#/components/schemas/Car'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '400':
+          description: Invalid car
+          content: {}
+      security:
+        - reservation_auth:
+          - admin         
+  /Car/{CarId}:
+    get:
+      tags:
+      - Car
+      summary: Find a certain car 
+      description: Returns one car with stated ID
+      operationId: getCarById
+      parameters:
+      - name: CarId
+        in: path
+        description: ID of product that needs to be found
+        required: true
+        schema:
+          type: integer
+          example: 3
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Car'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Car not found
+          content: {}
+      security:
+        - reservation_auth:
+          - write:cars
+          - read:cars          
+    put:
+      tags:
+      - Car
+      summary: Update a car by id
+      operationId: updateCar
+      parameters:
+      - name: CarId
+        in: path
+        description: An ID of car that needs to be updated
+        required: true
+        schema:
+          type: integer
+          format: int64
+          example: 0
+      requestBody:
+            description: Updated car object
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Car'
+              application/xml:
+                schema:
+                  $ref: '#/components/schemas/Car'    
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: A certain car not found
+          content: {}
+      security:
+       - reservation_auth:
+         - admin          
+    delete:
+      tags:
+      - Car
+      summary: Delete a car by id
+      operationId: deleteCar
+      parameters:
+      - name: api_key
+        in: header
+        schema:
+          type: string
+      - name: CarId
+        in: path
+        description: Car id to delete
+        required: true
+        schema:
+          type: integer
+          example: 3
+      responses:
+        '200':
+          description: Successful operation
+          content: {}
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: A certain car not found
+          content: {}
+      security:
+       - reservation_auth:
+         - admin           
+  /Car/{CarId}/uploadImage:
+    post:
+      tags:
+      - Car
+      summary: Upload an image of a car
+      operationId: uploadFile
+      parameters:
+      - name: CarId
+        in: path
+        description: ID of car, where you want to upload image
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  type: string
+                  description: file to upload
+                  format: binary
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: bad request
+      security:
+       - reservation_auth:
+         - admin           
+  /Service:
+    post:
+      tags:
+        - Service
+      summary: Place an reservation
+      operationId: placeReservation
+      requestBody:
+        description: placing reservation of an car
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '400':
+          description: Invalid Reservation
+          content: {}
+      x-codegen-request-body-name: body
+      security:
+      - reservation_auth:
+        - write:user
+        - read:user
+
+  /Service/{reservationId}:
+    get:
+      tags:
+        - Service
+      summary: Find reservation by ID
+      description: Getting reservaion
+      operationId: getReservationById
+      parameters:
+        - name: reservationId
+          in: path
+          description: ID of reservation that needs to be fetched
+          required: true
+          schema:
+            maximum: 10
+            minimum: 1
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Reservation not found
+          content: {}
+      security:
+      - api_key: []
+      
+    put:
+      tags:
+        - Service
+      summary: Update an reservation of the car
+      operationId: updateReservation
+      parameters:
+        - name: reservationId
+          in: path
+          description: ID of reservation that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64      
+      requestBody:
+        description: updated reservation of the car
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '400':
+          description: Invalid Reservation
+          content: {}
+      security:
+      - reservation_auth:
+        - write:user
+        - read:user
+        
+    delete:
+      tags:
+        - Service
+      summary: Delete reservation by ID
+      description: >-
+        For valid response try integer IDs with positive integer value.        
+        Negative or non-integer values will generate API errors
+      operationId: deleteReservation
+      parameters:
+        - name: reservationId
+          in: path
+          description: ID of the reservation that needs to be deleted
+          required: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Reservation not found
+          content: {}
+      security:
+      - reservation_auth:
+        - write:user
+        - read:user
+  
+  /Service/Catalog :
+      get:
+        tags:
+        - Service
+        summary: Returns a list of cars
+        operationId: getCatalog
+        responses:
+          200:
+            description: successful operation
+        security:
+          - reservation_auth:
+            - write:user
+            - read:user
+ 
+  /user:
+    post:
+      tags:
+      - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '400':
+          description: bad request
+          content: {}
+      x-codegen-request-body-name: body
+  /user/login:
+    get:
+      tags:
+      - user
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+      - name: userName
+        in: query
+        description: The user name for login
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login in clear text
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+          content: {}
+  /user/logout:
+    get:
+      tags:
+      - user
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+  /user/{userName}:
+    get:
+      tags:
+      - user
+      summary: Get user by name
+      operationId: getUserByName
+      parameters:
+      - name: userName
+        in: path
+        description: 'The name that needs to be fetched. Use user1 for testing. '
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+          content: {}
+        '404':
+          description: User not found
+          content: {}
+      security:
+        - reservation_auth:
+          - read:users
+    put:
+      tags:
+      - user
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+      - name: userName
+        in: path
+        description: he name to be updated
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Updated user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '400':
+          description: Invalid user supplied
+          content: {}
+        '404':
+          description: User not found
+          content: {}
+      security:
+        - reservation_auth:
+          - admin
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+      - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+      - name: userName
+        in: path
+        description: The name to be deleted
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '400':
+          description: Invalid username supplied
+          content: {}
+        '404':
+          description: User not found
+          content: {}
+      security:
+        - reservation_auth:
+          - admin
+          
+          
+          
+components:
+
+  schemas:
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        idUser:
+          $ref: '#/components/schemas/User'
+        idCar:
+          $ref: '#/components/schemas/Car'
+        startDate:
+          description: Date of start of reservation 
+          type: string
+          format: date-time
+        endDate:
+          description: Date of end of reservation 
+          type: string
+          format: date-time  
+        idSatusReserv:
+          type: integer
+          format: int64
+        Sum:
+          type: integer
+          format: int64
+      xml:
+        name: Reservation
+        
+    User:
+      type: object
+      properties:
+        idUser:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        login:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+      xml:
+        name: user
+        
+    Car:
+      required:
+      - name
+      type: object
+      properties:
+        idCar:
+          type: integer
+          format: int64
+        name:
+          type: string
+          example: Audi R8
+        productionYear:
+          type: integer
+          example: 2019
+        price: 
+          type: integer
+          format: int64
+          description: One day car price in dollars
+          example: 600
+        minDays:
+          type: integer
+          format: int64
+          example: 4
+        maxDays:
+          type: integer
+          format: int64
+          example: 14
+        idStatusCar:
+          type: integer
+          description: Car status in a rent company
+      xml:
+        name: Car
+    StatusCar:
+      type: object
+      properties:
+        idStatusCar:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: Status
+    StatusReserv:
+      type: object
+      properties:
+        idStatusReserv:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: Status
+
+          
+  securitySchemes:
+    reservation_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://CarService.Yura.com/oauth/dialog
+          scopes:
+            write:cars: modify cars in your account
+            read:cars: read your cars
+            read:users: read users
+            write:reservations: modify reservations in your account
+            read:reservations: read reservations
+            admin: admin priviledges
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
