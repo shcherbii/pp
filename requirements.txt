@@ -1,2 +1,5 @@
 Flask
 waitress
+mysql-connector-python
+sqlalchemy
+alembic
