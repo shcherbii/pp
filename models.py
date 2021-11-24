@@ -1,4 +1,3 @@
-import os
 import sys
 
 from sqlalchemy import (
@@ -10,13 +9,13 @@ from sqlalchemy import (
     Date,
 )
 
-from sqlalchemy import orm, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
 
-sys.path.append(r"C:\GitHub\ap_ostap")
+sys.path.append(r"C:\Users\Kcюша\pp")
 
-DB_URL = "mysql+mysqlconnector://root:root@localhost/car_service"
+DB_URL = "mysql://root:mySQL.kt.1502@localhost:3306/car_service"
 
 engine = create_engine(DB_URL)
 
@@ -36,10 +35,12 @@ class User(BaseModel):
     login = Column(String(length=45), nullable=False, unique=True)
     email = Column(String(length=45), nullable=False, unique=True)
     phone = Column(String(length=45), nullable=False, unique=True)
-    password = Column(String(length=45), nullable=False)
+    password = Column(String(length=75), nullable=False)
+
+    reservations = relationship("Reservation", back_populates="user")
 
     def __str__(self):
-        return f"User ID : {self.idUser}\n" \
+        return f"user ID : {self.idUser}\n" \
                f"firstName : {self.firstName}\n" \
                f"lastName : {self.lastName}\n" \
                f"login : {self.login}\n" \
@@ -60,6 +61,16 @@ class Car(BaseModel):
     idStatusCar = Column(Integer, ForeignKey("status_car.idStatusCar"))
 
     status_car = relationship("StatusCar")
+    reservations = relationship("Reservation", back_populates="car")
+
+    def __str__(self):
+        return f"Car ID : {self.idCar}\n" \
+               f"Name : {self.name}\n" \
+               f"Production year : {self.productionYear}\n" \
+               f"Price : {self.price}\n" \
+               f"minDays : {self.minDays}\n" \
+               f"maxDays : {self.maxDays}\n" \
+               f"idStatusCar : {self.idStatusCar}\n"
 
 
 class StatusCar(BaseModel):
@@ -77,18 +88,27 @@ class Reservation(BaseModel):
     sum = Column(DECIMAL(10, 2), nullable=False)
     idUser = Column(Integer, ForeignKey("user.idUser"))
     idCar = Column(Integer, ForeignKey("car.idCar"))
-    idStatusResev = Column(Integer, ForeignKey("status_reservation.idStatusResev"))
+    idStatusReserv = Column(Integer, ForeignKey("status_reservation.idStatusReserv"))
 
-    user = relationship("User")
-    car = relationship("Car")
-    status_reservation = relationship("StatusReservation")
+    user = relationship("User", back_populates="reservations")
+    car = relationship("Car", back_populates="reservations")
+    status_reservation = relationship("StatusReservation", back_populates="reservations")
 
 
 class StatusReservation(BaseModel):
     __tablename__ = "status_reservation"
 
-    idStatusResev = Column(Integer, primary_key=True, unique=True)
+    idStatusReserv = Column(Integer, primary_key=True, unique=True)
     name = Column(String(length=45), nullable=False)
 
+    reservations = relationship("Reservation", back_populates="status_reservation")
+
+# class CarImage(BaseModel):
+#     __tablename__ = "car_image"
+#
+#     idCar = Column(Integer, ForeignKey("car.idCar"))
+#     file = Column(String(length=100), nullable=False)
+#
+#     car = relationship("Car")
 # alembic revision --autogenerate -m "First"
 # alembic upgrade head
