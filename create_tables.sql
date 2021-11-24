@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `car_service`.`user` (
   `login` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `phone` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(75) NOT NULL,
   PRIMARY KEY (`idUser`),
   UNIQUE INDEX `login_UNIQUE` (`login` ASC) VISIBLE)
 ENGINE = InnoDB;
