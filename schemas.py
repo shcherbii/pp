@@ -5,7 +5,7 @@ from marshmallow import Schema
 class UserSchema(Schema):
     class Meta:
         model = User
-        fields = ('idUser', 'firstName', 'lastName', 'login', 'email', 'phone', 'password')
+        fields = ('idUser', 'firstName', 'lastName', 'login', 'email', 'phone', 'password', 'user_status')
 
 
 class CarSchema(Schema):

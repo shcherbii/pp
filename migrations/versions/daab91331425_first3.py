@@ -1,8 +1,8 @@
-"""First
+"""First3
 
-Revision ID: bfb1d9ced674
+Revision ID: daab91331425
 Revises: 
-Create Date: 2021-10-28 00:15:22.067108
+Create Date: 2021-12-02 23:51:10.571365
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bfb1d9ced674'
+revision = 'daab91331425'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,10 +25,10 @@ def upgrade():
     sa.UniqueConstraint('idStatusCar')
     )
     op.create_table('status_reservation',
-    sa.Column('idStatusResev', sa.Integer(), nullable=False),
+    sa.Column('idStatusReserv', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=45), nullable=False),
-    sa.PrimaryKeyConstraint('idStatusResev'),
-    sa.UniqueConstraint('idStatusResev')
+    sa.PrimaryKeyConstraint('idStatusReserv'),
+    sa.UniqueConstraint('idStatusReserv')
     )
     op.create_table('user',
     sa.Column('idUser', sa.Integer(), nullable=False),
@@ -37,7 +37,8 @@ def upgrade():
     sa.Column('login', sa.String(length=45), nullable=False),
     sa.Column('email', sa.String(length=45), nullable=False),
     sa.Column('phone', sa.String(length=45), nullable=False),
-    sa.Column('password', sa.String(length=45), nullable=False),
+    sa.Column('password', sa.String(length=75), nullable=False),
+    sa.Column('user_status', sa.String(length=75), nullable=False),
     sa.PrimaryKeyConstraint('idUser'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('idUser'),
@@ -63,9 +64,9 @@ def upgrade():
     sa.Column('sum', sa.DECIMAL(precision=10, scale=2), nullable=False),
     sa.Column('idUser', sa.Integer(), nullable=True),
     sa.Column('idCar', sa.Integer(), nullable=True),
-    sa.Column('idStatusResev', sa.Integer(), nullable=True),
+    sa.Column('idStatusReserv', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['idCar'], ['car.idCar'], ),
-    sa.ForeignKeyConstraint(['idStatusResev'], ['status_reservation.idStatusResev'], ),
+    sa.ForeignKeyConstraint(['idStatusReserv'], ['status_reservation.idStatusReserv'], ),
     sa.ForeignKeyConstraint(['idUser'], ['user.idUser'], ),
     sa.PrimaryKeyConstraint('idReservation'),
     sa.UniqueConstraint('idReservation')
