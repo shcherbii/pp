@@ -18,7 +18,7 @@ config = context.config
 
 config.set_main_option(
     "sqlalchemy.url",
-    os.getenv("DB_URL", "mysql://root:mySQL.kt.1502@localhost:3306/car_service")
+    os.getenv("DB_URL", "mysql://root:password@localhost:3306/car_service")
 )
 
 # Interpret the config file for Python logging.

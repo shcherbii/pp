@@ -15,7 +15,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session, relationship
 
 sys.path.append(r"C:\Users\Kcюша\pp")
 
-DB_URL = "mysql://root:mySQL.kt.1502@localhost:3306/car_service"
+DB_URL = "mysql://root:password@localhost:3306/car_service"
 
 engine = create_engine(DB_URL)
 
@@ -36,7 +36,7 @@ class User(BaseModel):
     email = Column(String(length=45), nullable=False, unique=True)
     phone = Column(String(length=45), nullable=False, unique=True)
     password = Column(String(length=75), nullable=False)
-
+    user_status = Column(String(length=75), nullable=False)
     reservations = relationship("Reservation", back_populates="user")
 
     def __str__(self):
