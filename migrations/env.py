@@ -9,7 +9,7 @@ from alembic import context
 import os
 import sys
 
-sys.path.append(r"C:\Users\Kcюша\pp")
+sys.path.append(r"D:\lab9_pp\pp")
 from models import BaseModel
 
 # this is the Alembic Config object, which provides
@@ -18,8 +18,9 @@ config = context.config
 
 config.set_main_option(
     "sqlalchemy.url",
-    os.getenv("DB_URL", "mysql://root:password@localhost:3306/car_service")
+    os.getenv("DB_URL", "mysql+mysqlconnector://root:sqlLp9lp@localhost:3306/car_service")
 )
+#"mysql://root:password@localhost:3306/car_service"
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

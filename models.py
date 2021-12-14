@@ -13,9 +13,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
 
-sys.path.append(r"C:\Users\Kcюша\pp")
+sys.path.append(r"D:\lab9_pp\pp")
 
-DB_URL = "mysql://root:password@localhost:3306/car_service"
+DB_URL = "mysql+mysqlconnector://root:sqlLp9lp@localhost:3306/car_service"
 
 engine = create_engine(DB_URL)
 
